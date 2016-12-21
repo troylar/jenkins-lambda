@@ -32,8 +32,8 @@ def parse_args(args):
    parser.add_argument('--jobname', help='name of the job')
    parser.add_argument('--parameters', help='job custom parameters')
    parser.add_argument('--folder', help='name of the folder')
-   parser.add_argument('command', nargs='?', help='run,update')
-   
+   parser.add_argument('command', nargs='?', help='run,update,info')
+   print len(args)  
    if len(args) < 2:
       throw_argument_error(parser, "Invalid arguments", constants.ARGPARSE_ERROR_INVALID_ARGUMENTS)
 
@@ -44,12 +44,13 @@ def validate_arguments(args):
       throw_argument_error (parser, "Invalid command", constants.ARGPARSE_ERROR_INVALID_COMMAND)
 
 def create_folder_name(job_name):
-   return ('Lambda - %s' % (job_name))
+   return ('%s' % (job_name))
 
 def create_job(jenkins_server, args):
+   print 'HERE!!!!'
    full_folder_name = create_folder_name(args.jobname)
    print 'Creating folder %s' % (full_folder_name)
-   jenkins_server.create_job('Lambda %s' % (full_folder_name), jenkins.EMPTY_FOLDER_XML)
+   jenkins_server.create_job('%s' % (args.jobname), constants.EMPTY_FOLDER_XML)
    quit()
 
 def read_config(config_yaml):
@@ -66,6 +67,7 @@ def main():
    validate_arguments(args)
    config = read_config(args.configyaml)
    server = jenkins.Jenkins(config["jenkins_url"], username=config["auth"]["username"], password=config["auth"]["password"])
+
    if args.command=='create':
       create_job(server, args)
 
