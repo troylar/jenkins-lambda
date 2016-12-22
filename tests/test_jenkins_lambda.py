@@ -1,8 +1,13 @@
 import unittest
-import jenkins_lambda
-import constants
 import jenkins
 from mock import MagicMock, patch
+import sys
+import os
+sys.path.insert(0, os.path.abspath('..'))
+
+from lambda_templates import constants
+from lambda_templates import jenkins_lambda
+
 class CommandLineTestCase(unittest.TestCase):
 
    def test_no_arguments_shows_help(self):
