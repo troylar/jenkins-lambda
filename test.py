@@ -31,5 +31,11 @@ class JenkinsTestCase(unittest.TestCase):
       jenkins_lambda.create_job(jenkins_mock, "test_job_name")
       create_job_mock.assert_called_with("test_job_name", constants.EMPTY_FOLDER_XML)
 
+   @patch.object(jenkins.Jenkins, 'create_job')
+   def test_gracefully_handle_error_if_folder_already_exist(self, create_job_mock):
+      jenkins_mock = jenkins.Jenkins("test", "test", "test")
+      create_job_mock.side_effect = jenkins.JenkinsException('job[%s] already exists % (name)')
+      jenkins_lambda.create_job(jenkins_mock, "test_job_name")
+
 if __name__ == '__main__':
    unittest.main()

@@ -68,7 +68,7 @@ def main():
    server = jenkins.Jenkins(config["jenkins_url"], username=config["auth"]["username"], password=config["auth"]["password"])
 
    if args.command=='create':
-      create_job(server, args)
+      create_job(server, args.jobname)
 
    if args.command=='run':
       print('Running job %s' % (args.jobname))
