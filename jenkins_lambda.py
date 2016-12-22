@@ -33,7 +33,7 @@ def parse_args(args):
    parser.add_argument('--parameters', help='job custom parameters')
    parser.add_argument('--folder', help='name of the folder')
    parser.add_argument('command', nargs='?', help='run,update,info')
-   print len(args)  
+   print(args)
    if len(args) < 2:
       throw_argument_error(parser, "Invalid arguments", constants.ARGPARSE_ERROR_INVALID_ARGUMENTS)
 
@@ -46,18 +46,17 @@ def validate_arguments(args):
 def create_folder_name(job_name):
    return ('%s' % (job_name))
 
-def create_job(jenkins_server, args):
-   print 'HERE!!!!'
-   full_folder_name = create_folder_name(args.jobname)
+def create_job(jenkins_server, job_name):
+   full_folder_name = create_folder_name(job_name)
    print 'Creating folder %s' % (full_folder_name)
-   jenkins_server.create_job('%s' % (args.jobname), constants.EMPTY_FOLDER_XML)
-   quit()
+   jenkins_server.create_job('%s' % (full_folder_name), constants.EMPTY_FOLDER_XML)
 
 def read_config(config_yaml):
    with open(config_yaml, 'r') as stream:
       try:
          config = yaml.load(stream)
       except yaml.YAMLError as exc:
+         print "ERROR LOADING %s" % (config_yaml)
          print(exc)
 
    return config
@@ -75,18 +74,17 @@ def main():
       print('Running job %s' % (args.jobname))
       job = server.get_job_config(args.jobname)
       server.build_job(args.jobname, json.loads(args.parameters))
-      quit()
-
+      
    if args.command=='update':
       for job_config in job_configs:
-	 job = server.get_job_config(job_config["name"])
-	 tree = et.fromstring(job)
-	 print "Updating %s" % (job_config["name"])
-	 print job_config
-	 for parameter in job_config["parameters"]:
-	    set_default_value(tree, parameter["name"], parameter["value"])
-      print et.tostring(tree, encoding='utf8', method='xml')
-      quit()
+      	 job = server.get_job_config(job_config["name"])
+      	 tree = et.fromstring(job)
+      	 print "Updating %s" % (job_config["name"])
+      	 print job_config
+      	 for parameter in job_config["parameters"]:
+      	    set_default_value(tree, parameter["name"], parameter["value"])
+            print et.tostring(tree, encoding='utf8', method='xml')
+            quit()
 
 if __name__ == '__main__':
    main()     
